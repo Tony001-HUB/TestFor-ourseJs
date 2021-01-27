@@ -66,3 +66,85 @@ fot (let key in personalMovieDB){
 8) Из объекта массив сделать 
 
 Object.keys(nameObj);
+
+
+9) Копирование объектов 1.Поверхносная копия(без вложеного объекта в объект)
+//объект для копирования
+const numbers = {
+    a: 5,
+    b: 10,
+    c: 20,
+    doubleNum: { //вложенный
+        i: 5.5
+    }
+}
+
+function copy(mainObj){
+    let copyObj = {}; //объект куда копируем
+
+    let key;
+    for (key in mainObj){
+        copyObj[key] = mainObj[key];
+    }
+
+    return copyObj;
+}
+
+const newNum = copy(numbers); // из numbers в newNum
+newNum.a = 10; // изменяем объект 
+
+console.log(numbers);
+console.log(newNum);
+
+
+
+
+10) Копирование объектов 2.Глубокая копия(с вложеным объектом в объект) БУДЕТ ПОЗЖЕ
+
+
+
+11) Объединение двух объектов на основе одного из двух. 
+
+Object.assign(куда, откуда); // в конец добавляет
+
+
+12) Копирование объектов при помощи функции с возможностью изменения
+
+const num = {
+    a: 10
+};
+const clone = Object.assign({}, num); // копирование объекта в новый объект с возможностью изменения
+clone.a = 20; //a = 20 
+
+console.log(num);
+console.log(clone);
+
+
+13) При работе с массивами применяе функцию newArr = oldArr.slice(); (старый метод)
+Новый стандарт позволяет копировать массивы таким образом: спрэд оператор ...
+const video = ['leo', 'doorPop'],
+      music = ['Makc krch'],
+      inet = [...video, ...music]; //слияние
+
+
+14) Передача в функцию параметров через массив при помощи спрэд оператор ...
+
+function log(a, b , c){
+    console.log(a);
+    console.log(b);
+    console.log(c);
+}
+
+const num = [2, 5 ,9];
+
+log(...num);
+
+
+
+15) Копирование объекта при помощи спрэд оператор ...
+
+const q = {
+    a: 'wertot'
+}
+
+const copy = {...q};
