@@ -1,1 +1,1 @@
-# TestFor-ourseJs
+# Полный_курс_по_JavaScript_+_React_с_нуля_до_результата
