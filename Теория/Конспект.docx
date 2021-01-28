@@ -163,3 +163,6 @@ let tony = {
 tony.__proto__ = warrior; 
 Object.setPrototypeOf(tony, warrior);
 const john = Object.create(warrior); 
+
+
+17) Динамическая типизация: 0, '', NaN, null, undef - false; Всё остальное - true; !! - к типу bool
