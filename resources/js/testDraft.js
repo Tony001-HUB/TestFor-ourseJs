@@ -1,10 +1,7 @@
-let warrior = {
-    armor: 100
-}
+const link = document.querySelector('.btn');
 
-let tony = {
-    attack: 500
-}
-tony.__proto__ = warrior; 
-Object.setPrototypeOf(tony, warrior);
-const john = Object.create(warrior); 
+console.log(document.body.childNodes); //получить узлы детей
+
+console.log(document.querySelector('.btn').parentNode);
+
+console.log(document.querySelector('[curent-item = "3"]').nextElementSibling);

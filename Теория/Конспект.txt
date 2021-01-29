@@ -166,3 +166,26 @@ const john = Object.create(warrior);
 
 
 17) Динамическая типизация: 0, '', NaN, null, undef - false; Всё остальное - true; !! - к типу bool
+
+
+18)Работа с событиями, отмена стандартоного поведения браузера 
+const link = document.querySelectorAll('.btn');
+
+link.addEventListener('click', (event) => {
+    event.preventDefault(); //говорим, что будет по другому обрабатывать ивент кнопки
+    console.log(event.target());
+});
+
+
+19) Получить все дочерние елементы body. 
+console.log(document.body.childNodes);
+ИЛИ
+console.log(document.querySelector('.btn').parentNode);
+
+
+
+20) Работа с селекторами страницы + получение следующего элемента после него 
+
+console.log(document.querySelector('[curent-item = "3"]').nextElementSibling);
+
+
