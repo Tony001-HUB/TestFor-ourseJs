@@ -1,4 +1,4 @@
-1)
+﻿1)
 добавляем удаленный репозиторий
 git remote add origin https://github.com/Tony001-HUB/TestFor-ourseJs.git
 
@@ -188,4 +188,8 @@ console.log(document.querySelector('.btn').parentNode);
 
 console.log(document.querySelector('[curent-item = "3"]').nextElementSibling);
 
+
+
+21) Дождаться полной DOM загрузки элементов
+document.addEventListener('DOMContentLoaded', () => {});
 
