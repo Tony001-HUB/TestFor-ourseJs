@@ -193,3 +193,10 @@ console.log(document.querySelector('[curent-item = "3"]').nextElementSibling);
 21) Дождаться полной DOM загрузки элементов
 document.addEventListener('DOMContentLoaded', () => {});
 
+
+22) defer - загрузка скрипта в фоновом режиме. и выполнится сразу после того, как будет готово DOM ДЕРЕВО.
+и можно загружать скрипт в начале body и даже head
+
+
+23) async - в отличии от defer не ждет загрузки остальных скриптов (которые стоят до него). Так же ждет загрузки 
+DOM ДЕРЕВа.
