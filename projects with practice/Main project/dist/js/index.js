@@ -114,16 +114,50 @@ function setClockOnPage(selector, endTime){
           modal = document.querySelector('.modal'),
           modalCloseBtn = document.querySelector('[data-close]');
 
+    function closeAndShowModalWindow(cssClass){
+        modal.classList.toggle(cssClass);
+    }
 
     modalTrigger.forEach(btn => {
         btn.addEventListener('click', () => {
-            modal.classList.toggle('show');
+            closeAndShowModalWindow('show');
         });
     });
 
     modalCloseBtn.addEventListener('click', () =>{
-        modal.classList.toggle('show');
+        closeAndShowModalWindow('show');
     });
 
 
+    //закрытие окна кликом по любой части страницы кроме самого окошка event.target(куда тыкнул ползователь)
+    modal.addEventListener('click', (event) => {
+        if(event.target == modal){ 
+            closeAndShowModalWindow('show');
+        }
+    });
+
+    //закрытие по нажатию клавиши esc
+    document.addEventListener('keydown', (event) => {
+        if(event.code == 'Escape' && modal.classList.contains('show')){ //event.code js 
+            closeAndShowModalWindow('show');
+        }
+
+    });
+    
+
+
+    //появление модального окна через в определённый момент.
+    setTimeout(closeAndShowModalWindow('show'), 1000);
+
+
+    //появление модального окна, когда пользователь долистал страницу до конца(один раз)
+    // 1.прокрученная часть + 2.то что видит пользователь >= 3.конец страницы
+    function showModalByScroll(){
+        if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){ 
+            modal.classList.toggle('show');
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
 });
