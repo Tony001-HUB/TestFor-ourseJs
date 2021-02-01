@@ -106,4 +106,24 @@ function setClockOnPage(selector, endTime){
 }
     setClockOnPage('.timer', deadLine);
 
+
+
+//вызов модального окна data-modal / data-close
+
+    const modalTrigger = document.querySelectorAll("[data-modal]"), 
+          modal = document.querySelector('.modal'),
+          modalCloseBtn = document.querySelector('[data-close]');
+
+
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.classList.toggle('show');
+        });
+    });
+
+    modalCloseBtn.addEventListener('click', () =>{
+        modal.classList.toggle('show');
+    });
+
+
 });
