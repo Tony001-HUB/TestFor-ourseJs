@@ -263,3 +263,43 @@ wrapper.addEventListener('click', (event) => {
 
 /*********************************************************************************
 
+25) Контекст вызова функции .this
+
+function showThis(){
+    console.log(this); 
+}
+//обычная функция this = window
+
+const obj = {
+    a: 5,
+    b: 9,
+    sum: function(){
+        console.log(this);
+    }
+};
+obj.sum();
+// такой this выведет весь объект
+
+function sayName(){
+    console.log(this.nane);
+}
+
+const user = {
+    name: 'John'
+};
+
+sayName.call(user);
+//ручное присвоение контекста This
+
+
+function count(num){
+    return this * num;
+}
+
+const double = count.bind(2);
+console.log(double);
+// привязка контекста припомощи функции bind
+
+
+
+!!Стрелочная функция ссылается на своего родителя, а просто функция на элементпокоторому кликаем
