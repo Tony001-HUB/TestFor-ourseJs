@@ -173,13 +173,14 @@ function setClockOnPage(selector, endTime){
     class Menu {
         //"img/tabs/vegy.jpg"
 
-        constructor(subtitle, descr, totalPrice, src, alt, parentSelector) {
+        constructor(subtitle, descr, totalPrice, src, alt, parentSelector, ...classes) {
           this.subtitle = subtitle;
           this.descr = descr;
           this.totalPrice = totalPrice;
           this.src = src;
           this.alt = alt;
           this.parent = document.querySelector(parentSelector);
+          this.classes = classes;
           this.transfer = 3;
           this.changeToBY();
         }
@@ -191,8 +192,15 @@ function setClockOnPage(selector, endTime){
 
         render(){
             const element = document.createElement('div');
+
+            if(this.classes.length === 0){
+                this.element = 'menu__item';
+                element.classList.add(this.element);
+            } else {
+                this.classes.forEach(className => element.classList.add(className)); //добавить класс элементу
+            }
+
             element.innerHTML = `         
-            <div class="menu__item">
                     <img src = ${this.src} alt=${this.alt}>
                     <h3 class="menu__item-subtitle">${this.subtitle}</h3>
                     <div class="menu__item-descr">${this.descr}</div>
@@ -201,13 +209,11 @@ function setClockOnPage(selector, endTime){
                         <div class="menu__item-cost">Цена:</div>
                         <div class="menu__item-total"><span>${this.totalPrice}</span> BY/день</div>
                     </div>
-                </div>
             `;
             this.parent.append(element);
         }
       
     }
-
 
     //subtitle, descr, totalPrice, src, alt, parentSelector
             new Menu(
@@ -216,7 +222,8 @@ function setClockOnPage(selector, endTime){
                 6,
                 'img/tabs/vegy.jpg',
                 'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
-                '.menu .container'
+                '.menu .container',
+                'menu__item'
                 ).render();
 
             new Menu(
@@ -225,7 +232,8 @@ function setClockOnPage(selector, endTime){
                 10,
                 'img/tabs/elite.jpg',
                 'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
-                '.menu .container'
+                '.menu .container',
+                'menu__item'
                 ).render();
 
 
@@ -235,6 +243,7 @@ function setClockOnPage(selector, endTime){
                 2,
                 'img/tabs/post.jpg',
                 'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
-                '.menu .container'
+                '.menu .container',
+                'menu__item'
                 ).render();
 });
