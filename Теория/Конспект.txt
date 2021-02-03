@@ -332,3 +332,100 @@ clone.lastName.nameL = 'LOLKEK';
 
 console.log(person);
 console.log(clone);
+
+
+//***** КУРСЫ БОРИС *////// ПРОТОТИПЫ ПОД КОПОТОМ ЛОГИКА!!!
+
+У каждой функции-конструктора есть свой конструктор по умолчания 
+{
+   constructor: SayHello
+
+}
+
+создавая прототип так SayHello.prototype {test(){}} мы перезаписываем конструктор 
+надо так: SayHello.prototype.test(через точку указывать метод)
+
+НЕЛЬЗЯ:
+SayHello.prototype = {
+   test: function() {...},
+   testTwo: function() {...}
+}
+НАДО:
+SayHello.prototype.test
+SayHello.prototype.testTwo
+
+//
+const obj = new SayHello('1');
+const obj1 = new obj.constructor('2');
+- SayHello.prototype является прототипом объекта obj;
+- SayHello.prototype содержит свойство constructor
+- obj ссылается на constructor
+Вызвать на obj1 конструктор obj
+
+просуммируем:
+- SayHello.prototype - это объект, который будет прототипом для всех объектов, которые создала функция SayHello;
+- SayHello.prototype содержит свойство constructor, которое ссылается на функцию SayHello;
+- Получается, что через свойство constructor мы можем обращаться к функции SayHello;
+obj.constructor == SayHello
+
+Борис, [03.02.21 17:53]
+function Person(name) {
+   this.name = name;
+}
+Person.prototype.eat = function() { ... }
+
+function Student(name, faculty, university) {
+     Person.call(this, name); // все равно, что super в классах
+
+     this.faculty = faculty;
+     this.university = university;
+}
+Student.prototype.work = function() { ... }
+Student.prototype.__proto__ = Person;
+
+Борис, [03.02.21 17:53]
+сейчас будем разбираться, как это работает
+
+Борис, [03.02.21 17:55]
+Person.call(this, name); - это вызов родительской функции конструктора. 
+Мы говорим функции Person:
+"у нас есть объект-студент, добавь ему имя"
+
+Первым параметром в call мы указываем, кто будет this'ом внутри функции Person.
+Внутри функции Person this'ом будет наш объект-студент. Ему добавится свойство name.
+
+Борис, [03.02.21 17:58]
+Логика работы примерно такая:
+...
+function Student(name, faculty, university) {
+     Person.call(this, name); // 1
+
+     this.faculty = faculty; // 2
+     this.university = university; // 3
+}
+...
+const student = new Student('Vasya', 'Math', 'Geneva');
+
+
+
+1 -> this выглядит так: 
+{name: 'Vasya'}
+2 -> this выглядит так: 
+{name: 'Vasya', faculty: 'Math'}
+3 -> this выглядит так: 
+{name: 'Vasya', faculty: 'Math', university: 'Geneva'}
+
+Борис, [03.02.21 17:59]
+Важно понять: на шаге 1 мы попросили функцию Person обработать нашего студента - добавить ему свойство name
+
+Tony Osipenko, [03.02.21 18:01]
+понял) можно тогда  this.name = name; this.birth = birth; в Employee не писать, а просто     Person.call(this, ... , ...);
+
+Борис, [03.02.21 18:01]
+да)
+
+Борис, [03.02.21 18:01]
+это удобно, когда Person добавляет не одно свойство, а 50
+
+
+//***** КУРСЫ БОРИС *////// ПРОТОТИПЫ ПОД КОПОТОМ ЛОГИКА!!!
