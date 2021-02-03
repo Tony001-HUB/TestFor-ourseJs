@@ -1,6 +1,16 @@
-function log(a, b, ...rest) {
-    console.log(a, b , rest);
-}
+const person = {
+ name: 'Pop',
+ age: 30,
+ lastName: {
+    nameL: 'KEKLOL'
+ }
+};
 
-log('a', 'b', 5555, '777', 6789);
-//почему-то не работает с нулями(000);
+//console.log(JSON.parse(JSON.stringify(person))); // конверт к json(stringify) из (parse)
+
+//глубокое копирование объекта не зависимого от person, при изменении
+const clone = JSON.parse(JSON.stringify(person));
+clone.lastName.nameL = 'LOLKEK';
+
+console.log(person);
+console.log(clone);
