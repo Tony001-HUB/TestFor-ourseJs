@@ -50,7 +50,7 @@ const tabs = document.querySelectorAll('.tabheader__item'),
     });
 
 //ТАЙМЕР
-const deadLine = '2021-02-02';
+const deadLine = '2021-05-02';
 
 
 function getTimeRemaining(endTime){
@@ -160,4 +160,81 @@ function setClockOnPage(selector, endTime){
     }
 
     window.addEventListener('scroll', showModalByScroll);
+
+
+
+    //использование классов на практике
+    const form = document.querySelectorAll('.menu__item'),
+          subtitleItem = document.querySelector('.menu__item-subtitle'),
+          descrItem = document.querySelector('.menu__item-descr'),
+          totalPriceItem = document.querySelector('.menu__item-total');
+
+
+    class Menu {
+        //"img/tabs/vegy.jpg"
+
+        constructor(subtitle, descr, totalPrice, src, alt, parentSelector) {
+          this.subtitle = subtitle;
+          this.descr = descr;
+          this.totalPrice = totalPrice;
+          this.src = src;
+          this.alt = alt;
+          this.parent = document.querySelector(parentSelector);
+          this.transfer = 3;
+          this.changeToBY();
+        }
+      
+        changeToBY(){
+            this.totalPrice  = +this.totalPrice * this.transfer;
+        }
+
+
+        render(){
+            const element = document.createElement('div');
+            element.innerHTML = `         
+            <div class="menu__item">
+                    <img src = ${this.src} alt=${this.alt}>
+                    <h3 class="menu__item-subtitle">${this.subtitle}</h3>
+                    <div class="menu__item-descr">${this.descr}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${this.totalPrice}</span> BY/день</div>
+                    </div>
+                </div>
+            `;
+            this.parent.append(element);
+        }
+      
+    }
+
+
+    //subtitle, descr, totalPrice, src, alt, parentSelector
+            new Menu(
+                'Меню "Фитнес"',
+                'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+                6,
+                'img/tabs/vegy.jpg',
+                'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
+                '.menu .container'
+                ).render();
+
+            new Menu(
+                'Меню “Премиум”',
+                'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+                10,
+                'img/tabs/elite.jpg',
+                'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
+                '.menu .container'
+                ).render();
+
+
+            new Menu(
+                'Меню "Постное"',
+                'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков. ',
+                2,
+                'img/tabs/post.jpg',
+                'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
+                '.menu .container'
+                ).render();
 });
