@@ -215,7 +215,7 @@ function setClockOnPage(selector, endTime){
       
     }
 
-    //subtitle, descr, totalPrice, src, alt, parentSelector
+              //subtitle, descr, totalPrice, src, alt, parentSelector
             new Menu(
                 'Меню "Фитнес"',
                 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
@@ -224,7 +224,7 @@ function setClockOnPage(selector, endTime){
                 'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
                 '.menu .container',
                 'menu__item'
-                ).render();
+            ).render();
 
             new Menu(
                 'Меню “Премиум”',
@@ -234,7 +234,7 @@ function setClockOnPage(selector, endTime){
                 'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
                 '.menu .container',
                 'menu__item'
-                ).render();
+            ).render();
 
 
             new Menu(
@@ -245,5 +245,63 @@ function setClockOnPage(selector, endTime){
                 'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
                 '.menu .container',
                 'menu__item'
-                ).render();
+            ).render();
+
+
+    //FORMS работа с локальным сервером
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'загрузка',
+        success: 'спасибо, мы с вами обязательно свяжемся!',
+        failure: 'error попробуйте позже'
+    };
+
+    forms.forEach(from => {
+        postData(from);
+    });
+
+    function postData(form){
+//submit сработает каждый раз когда мы патаемся отправить какую-то форму
+        form.addEventListener('submit', (event) =>{
+            event.preventDefault();
+
+            const statusMess = document.createElement('div');
+            statusMess.classList.add('status');
+            statusMess.textContent = message.loading;
+            form.append(statusMess);
+
+            const request = new XMLHttpRequest();
+            request.open('POST','server.php');
+
+            request.setRequestHeader('Content-type', 'application/json; charset=utf-8');//  заголовки которые говорят серваку, что именно пришло
+            const formData = new FormData(form); //откуда надо собрать данные FormData работает с тегом name в html
+
+            //при использовании JSON нам надо FormData перебрать и конвертнуть в обычный {}
+            const object = {};
+            formData.forEach(function(value, key){
+                object[key] = value;
+            });
+            const json = JSON.stringify(object);
+
+            //отправим данные на сервак(уже JSON)
+            request.send(json);
+
+            //обработчик конечной загрузки
+            request.addEventListener('load', () =>{
+                if(request.status == 200){
+                    console.log(request.response);
+                    statusMess.textContent = message.success;
+
+                    form.reset(); // сбросим форму
+                    setTimeout(() => {
+                        statusMess.remove();
+                    }, 3000);
+                }else {
+                    statusMess.textContent = message.failure;
+                }
+
+            });
+        });
+    }
 });
