@@ -266,35 +266,32 @@ window.addEventListener('scroll', showModalByScroll);
             `;
             form.insertAdjacentElement('afterend', statusMess);
 
-            const request = new XMLHttpRequest();
-            request.open('POST','server.php');
 
-            request.setRequestHeader('Content-type', 'application/json; charset=utf-8');//  заголовки которые говорят серваку, что именно пришло
             const formData = new FormData(form); //откуда надо собрать данные FormData работает с тегом name в html
 
+           
             //при использовании JSON нам надо FormData перебрать и конвертнуть в обычный {}
             const object = {};
             formData.forEach(function(value, key){
                 object[key] = value;
             });
-            const json = JSON.stringify(object);
-
-            //отправим данные на сервак(уже JSON)
-            request.send(json);
-
-            //обработчик конечной загрузки
-            request.addEventListener('load', () =>{
-                if(request.status == 200){
-                    console.log(request.response);
-                    showThanksModal(message.success);
-
-                    form.reset(); // сбросим форму           
-                    statusMess.remove();
-                }else {
-                    showThanksModal(message.failure);
-                }
-
+            
+            fetch('server.php', {
+                method: "POST",
+                headers: {'Content-type': 'application/json'},
+                body: JSON.stringify(object)
+            })
+            .then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.success);        
+                statusMess.remove();
+            }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() =>{
+                form.reset(); // сбросим форму   
             });
+
         });
     }
 
@@ -321,5 +318,8 @@ window.addEventListener('scroll', showModalByScroll);
             closeModal();
         }, 4000);
     }
+
+
+    
 
 });
