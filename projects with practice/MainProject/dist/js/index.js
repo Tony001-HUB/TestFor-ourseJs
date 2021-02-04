@@ -110,57 +110,48 @@ function setClockOnPage(selector, endTime){
 
 //вызов модального окна data-modal / data-close
 
-    const modalTrigger = document.querySelectorAll("[data-modal]"), 
-          modal = document.querySelector('.modal'),
-          modalCloseBtn = document.querySelector('[data-close]');
+const modalTrigger = document.querySelectorAll('[data-modal]'),
+modal = document.querySelector('.modal');
 
-    function closeAndShowModalWindow(cssClass){
-        modal.classList.toggle(cssClass);
-    }
+modalTrigger.forEach(btn => {
+btn.addEventListener('click', openModal);
+});
 
-    modalTrigger.forEach(btn => {
-        btn.addEventListener('click', () => {
-            closeAndShowModalWindow('show');
-        });
-    });
+function closeModal() {
+modal.classList.add('hide');
+modal.classList.remove('show');
+document.body.style.overflow = '';
+}
 
-    modalCloseBtn.addEventListener('click', () =>{
-        closeAndShowModalWindow('show');
-    });
+function openModal() {
+modal.classList.add('show');
+modal.classList.remove('hide');
+document.body.style.overflow = 'hidden';
+clearInterval(modalTimerId);
+}
 
+modal.addEventListener('click', (event) => {
+if (event.target === modal || event.target.getAttribute('data-close') == "") {
+    closeModal();
+}
+});
 
-    //закрытие окна кликом по любой части страницы кроме самого окошка event.target(куда тыкнул ползователь)
-    modal.addEventListener('click', (event) => {
-        if(event.target == modal){ 
-            closeAndShowModalWindow('show');
-        }
-    });
+document.addEventListener('keydown', (event) => {
+if (event.code === "Escape" && modal.classList.contains('show')) { 
+    closeModal();
+}
+});
 
-    //закрытие по нажатию клавиши esc
-    document.addEventListener('keydown', (event) => {
-        if(event.code == 'Escape' && modal.classList.contains('show')){ //event.code js 
-            closeAndShowModalWindow('show');
-        }
-
-    });
-    
-
-
-    //появление модального окна через в определённый момент.
-    setTimeout(closeAndShowModalWindow('show'), 1000);
+const modalTimerId = setTimeout(openModal, 300000);
 
 
-    //появление модального окна, когда пользователь долистал страницу до конца(один раз)
-    // 1.прокрученная часть + 2.то что видит пользователь >= 3.конец страницы
-    function showModalByScroll(){
-        if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){ 
-            modal.classList.toggle('show');
-            window.removeEventListener('scroll', showModalByScroll);
-        }
-    }
-
-    window.addEventListener('scroll', showModalByScroll);
-
+function showModalByScroll() {
+if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+    openModal();
+    window.removeEventListener('scroll', showModalByScroll);
+}
+}
+window.addEventListener('scroll', showModalByScroll);
 
 
     //использование классов на практике
@@ -252,7 +243,7 @@ function setClockOnPage(selector, endTime){
     const forms = document.querySelectorAll('form');
 
     const message = {
-        loading: 'загрузка',
+        loading: 'img/form/spinner.svg',
         success: 'спасибо, мы с вами обязательно свяжемся!',
         failure: 'error попробуйте позже'
     };
@@ -261,15 +252,19 @@ function setClockOnPage(selector, endTime){
         postData(from);
     });
 
+    
     function postData(form){
 //submit сработает каждый раз когда мы патаемся отправить какую-то форму
         form.addEventListener('submit', (event) =>{
             event.preventDefault();
 
-            const statusMess = document.createElement('div');
-            statusMess.classList.add('status');
-            statusMess.textContent = message.loading;
-            form.append(statusMess);
+            const statusMess = document.createElement('img');
+            statusMess.src = message.loading;
+            statusMess.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
+            form.insertAdjacentElement('afterend', statusMess);
 
             const request = new XMLHttpRequest();
             request.open('POST','server.php');
@@ -291,17 +286,40 @@ function setClockOnPage(selector, endTime){
             request.addEventListener('load', () =>{
                 if(request.status == 200){
                     console.log(request.response);
-                    statusMess.textContent = message.success;
+                    showThanksModal(message.success);
 
-                    form.reset(); // сбросим форму
-                    setTimeout(() => {
-                        statusMess.remove();
-                    }, 3000);
+                    form.reset(); // сбросим форму           
+                    statusMess.remove();
                 }else {
-                    statusMess.textContent = message.failure;
+                    showThanksModal(message.failure);
                 }
 
             });
         });
     }
+
+
+    function showThanksModal(message){
+        const prevModalDialog = document.querySelector('.modal__dialog');
+
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-close>×</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000);
+    }
+
 });
