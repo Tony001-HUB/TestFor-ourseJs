@@ -494,3 +494,11 @@ Promise.race([test(1000), test(2000)]).then(() =>{
 });
 
 ////////////**************************///////////
+
+////////////******НАСТРОЙКА JSON-SERVER*****////////
+npm i json-server --save-dev //установка локально в проект json-server
+npx json-server --watch db.json //Достать данные/запуск из json-файла
+
+
+
+

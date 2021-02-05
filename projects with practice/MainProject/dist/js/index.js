@@ -164,12 +164,12 @@ window.addEventListener('scroll', showModalByScroll);
     class Menu {
         //"img/tabs/vegy.jpg"
 
-        constructor(subtitle, descr, totalPrice, src, alt, parentSelector, ...classes) {
-          this.subtitle = subtitle;
+        constructor(img, altimg, title, descr, price, parentSelector, ...classes) {
+          this.title = title;
           this.descr = descr;
-          this.totalPrice = totalPrice;
-          this.src = src;
-          this.alt = alt;
+          this.price = price;
+          this.img = img;
+          this.altimg = altimg;
           this.parent = document.querySelector(parentSelector);
           this.classes = classes;
           this.transfer = 3;
@@ -177,7 +177,7 @@ window.addEventListener('scroll', showModalByScroll);
         }
       
         changeToBY(){
-            this.totalPrice  = +this.totalPrice * this.transfer;
+            this.price  = +this.price * this.transfer;
         }
 
 
@@ -192,13 +192,13 @@ window.addEventListener('scroll', showModalByScroll);
             }
 
             element.innerHTML = `         
-                    <img src = ${this.src} alt=${this.alt}>
-                    <h3 class="menu__item-subtitle">${this.subtitle}</h3>
+                    <img src = ${this.img} alt=${this.altimg}>
+                    <h3 class="menu__item-subtitle">${this.title}</h3>
                     <div class="menu__item-descr">${this.descr}</div>
                     <div class="menu__item-divider"></div>
                     <div class="menu__item-price">
                         <div class="menu__item-cost">Цена:</div>
-                        <div class="menu__item-total"><span>${this.totalPrice}</span> BY/день</div>
+                        <div class="menu__item-total"><span>${this.price}</span> BY/день</div>
                     </div>
             `;
             this.parent.append(element);
@@ -206,38 +206,47 @@ window.addEventListener('scroll', showModalByScroll);
       
     }
 
-              //subtitle, descr, totalPrice, src, alt, parentSelector
-            new Menu(
-                'Меню "Фитнес"',
-                'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-                6,
-                'img/tabs/vegy.jpg',
-                'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
-                '.menu .container',
-                'menu__item'
-            ).render();
+    const getResource = async (url, data) => {
+        const result = await fetch(url);
 
-            new Menu(
-                'Меню “Премиум”',
-                'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-                10,
-                'img/tabs/elite.jpg',
-                'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
-                '.menu .container',
-                'menu__item'
-            ).render();
+        if(!result.ok){
+            throw new Error(`Could not fetch ${url}, status: ${result.status}`);
+        }
 
+        return await result.json();
+    };
 
-            new Menu(
-                'Меню "Постное"',
-                'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков. ',
-                2,
-                'img/tabs/post.jpg',
-                'https://im0-tub-by.yandex.net/i?id=b7503e8cb6590fff097d562bdba966c8&n=13',
-                '.menu .container',
-                'menu__item'
-            ).render();
+    getResource('http://localhost:3000/menu')
+    .then(data => {   
+        data.forEach(({img, altimg, title, descr, price}) => {
+            new Menu(img, altimg, title, descr, price, '.menu .container').render();
+        });
+    });
 
+    /* когда нам надо создать только 1 (мало) карточек, к примеру
+    // getResource('http://localhost:3000/menu')
+    //     .then(data => createCard(data));
+
+    // function createCard(data) {
+    //     data.forEach(({img, altimg, title, descr, price}) => {
+    //         const element = document.createElement('div');
+
+    //         element.classList.add("menu__item");
+
+    //         element.innerHTML = `
+    //             <img src=${img} alt=${altimg}>
+    //             <h3 class="menu__item-subtitle">${title}</h3>
+    //             <div class="menu__item-descr">${descr}</div>
+    //             <div class="menu__item-divider"></div>
+    //             <div class="menu__item-price">
+    //                 <div class="menu__item-cost">Цена:</div>
+    //                 <div class="menu__item-total"><span>${price}</span> грн/день</div>
+    //             </div>
+    //         `;
+    //         document.querySelector(".menu .container").append(element);
+    //     });
+    // }
+    */
 
     //FORMS работа с локальным сервером
     const forms = document.querySelectorAll('form');
@@ -249,11 +258,21 @@ window.addEventListener('scroll', showModalByScroll);
     };
 
     forms.forEach(from => {
-        postData(from);
+        bindPostData(from);
     });
 
+    const postData = async (url, data) => {
+        const result = await fetch(url, {
+            method: "POST",
+            headers: {'Content-type': 'application/json'},
+            body: data
+        });
+
+        return await result.json();
+    };
+
     
-    function postData(form){
+    function bindPostData(form){
 //submit сработает каждый раз когда мы патаемся отправить какую-то форму
         form.addEventListener('submit', (event) =>{
             event.preventDefault();
@@ -269,19 +288,11 @@ window.addEventListener('scroll', showModalByScroll);
 
             const formData = new FormData(form); //откуда надо собрать данные FormData работает с тегом name в html
 
-           
-            //при использовании JSON нам надо FormData перебрать и конвертнуть в обычный {}
-            const object = {};
-            formData.forEach(function(value, key){
-                object[key] = value;
-            });
-            
-            fetch('server.php', {
-                method: "POST",
-                headers: {'Content-type': 'application/json'},
-                body: JSON.stringify(object)
-            })
-            .then(data => data.text())
+            //formData.entries() to arr / Object.fromEntries to obj 
+            const json =JSON.stringify(Object.fromEntries(formData.entries()));
+
+
+            postData('http://localhost:3000/requests', json)
             .then(data => {
                 console.log(data);
                 showThanksModal(message.success);        
@@ -318,8 +329,4 @@ window.addEventListener('scroll', showModalByScroll);
             closeModal();
         }, 4000);
     }
-
-
-    
-
 });
